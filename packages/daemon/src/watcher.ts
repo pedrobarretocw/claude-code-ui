@@ -164,7 +164,7 @@ export class SessionWatcher extends EventEmitter {
 
       // Derive status from all entries
       const status = deriveStatus(allEntries);
-      const previousStatus = existingSession?.status ?? null;
+      const previousStatus = existingSession?.status;
 
       // Build session state - prefer branch from git info over log entry
       const session: SessionState = {

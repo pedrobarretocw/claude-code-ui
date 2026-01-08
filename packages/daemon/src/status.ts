@@ -138,7 +138,7 @@ export function deriveStatus(
  * Compare two status results to detect meaningful changes.
  */
 export function statusChanged(
-  prev: StatusResult | null,
+  prev: StatusResult | null | undefined,
   next: StatusResult
 ): boolean {
   if (!prev) return true;

@@ -3,7 +3,7 @@
  * Durable Streams server for session state.
  */
 
-import { DurableStreamTestServer, FileBackedStreamStore } from "@durable-streams/server";
+import { DurableStreamTestServer } from "@durable-streams/server";
 import { DurableStream } from "@durable-streams/client";
 import { sessionsStateSchema, type Session, type RecentOutput, type PRInfo } from "./schema.js";
 import type { SessionState } from "./watcher.js";
@@ -33,12 +33,10 @@ export class StreamServer {
     this.port = options.port ?? DEFAULT_PORT;
     const dataDir = options.dataDir ?? path.join(os.homedir(), ".claude-code-ui", "streams");
 
-    const store = new FileBackedStreamStore({ dataDir });
-
     this.server = new DurableStreamTestServer({
       port: this.port,
       host: "127.0.0.1",
-      store,
+      dataDir,
     });
 
     this.streamUrl = `http://127.0.0.1:${this.port}${SESSIONS_STREAM_PATH}`;
