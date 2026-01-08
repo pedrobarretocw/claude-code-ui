@@ -101,13 +101,16 @@ export function deriveStatus(
     }
   } else {
     // Last entry is assistant message
-    console.log(`[Status] Assistant entry: hasPendingToolUse=${hasPendingToolUse}`);
-    if (hasPendingToolUse) {
-      // Tool is executing - this is "working" not "waiting"
-      status = "working";
-    } else {
-      // Claude finished, waiting for user input
+    const stopReason = lastEntry.message.stop_reason;
+    console.log(`[Status] Assistant entry: hasPendingToolUse=${hasPendingToolUse}, stopReason=${stopReason}`);
+
+    // Only "waiting" if Claude explicitly finished with end_turn
+    // null = still streaming, "tool_use" = tool executing
+    if (stopReason === "end_turn" && !hasPendingToolUse) {
       status = "waiting";
+    } else {
+      // Still streaming, or tool executing
+      status = "working";
     }
   }
 
