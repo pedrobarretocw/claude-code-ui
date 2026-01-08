@@ -75,7 +75,7 @@ export function deriveStatus(
     hasPendingToolUse = toolUseIds.size > 0;
   }
 
-  // Determine status based on last role
+  // Determine status based on last role and pending tools
   let status: SessionStatus;
 
   if (lastEntry.type === "user") {
@@ -98,7 +98,14 @@ export function deriveStatus(
       }
     }
   } else {
-    status = "waiting";
+    // Last entry is assistant message
+    if (hasPendingToolUse) {
+      // Tool is executing - this is "working" not "waiting"
+      status = "working";
+    } else {
+      // Claude finished, waiting for user input
+      status = "waiting";
+    }
   }
 
   return {
@@ -138,7 +145,7 @@ export function formatStatus(result: StatusResult): string {
 
   const labels: Record<SessionStatus, string> = {
     working: "Working",
-    waiting: result.hasPendingToolUse ? "Needs approval" : "Waiting for input",
+    waiting: result.hasPendingToolUse ? "Tool pending" : "Waiting for input",
     idle: "Idle",
   };
 

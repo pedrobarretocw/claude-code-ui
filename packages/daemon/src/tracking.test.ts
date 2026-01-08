@@ -166,7 +166,7 @@ describe("Session Tracking", () => {
       expect(status.hasPendingToolUse).toBe(false);
     });
 
-    it("should detect pending tool use", async () => {
+    it("should detect pending tool use as working", async () => {
       const entry1 = createUserEntry("Run a command");
       const entry2 = createAssistantEntry("I'll run that for you", new Date().toISOString(), true);
       await writeFile(TEST_LOG_FILE, entry1 + entry2);
@@ -174,7 +174,8 @@ describe("Session Tracking", () => {
       const { entries } = await tailJSONL(TEST_LOG_FILE, 0);
       const status = deriveStatus(entries);
 
-      expect(status.status).toBe("waiting");
+      // Tool executing = working, not waiting
+      expect(status.status).toBe("working");
       expect(status.hasPendingToolUse).toBe(true);
     });
 
