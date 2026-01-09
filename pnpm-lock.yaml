@@ -77,11 +77,11 @@ importers:
         specifier: ^3.2.1
         version: 3.2.1(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@tanstack/db':
-        specifier: ^0.5.17
-        version: 0.5.17(typescript@5.9.3)
+        specifier: ^0.5.18
+        version: 0.5.18(typescript@5.9.3)
       '@tanstack/react-db':
-        specifier: ^0.1.61
-        version: 0.1.61(react@19.2.3)(typescript@5.9.3)
+        specifier: ^0.1.62
+        version: 0.1.62(react@19.2.3)(typescript@5.9.3)
       '@tanstack/react-router':
         specifier: ^1.146.2
         version: 1.146.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -1448,11 +1448,6 @@ packages:
     peerDependencies:
       typescript: '>=4.7'
 
-  '@tanstack/db@0.5.17':
-    resolution: {integrity: sha512-p3SkcjtEQR1eMSekMyAtV1g38erIDJTbhMgU3bqcJgxpOsFN7ALyZlNt/IavU035qDDOPzKZBpnHDmYW2cAlLA==}
-    peerDependencies:
-      typescript: '>=4.7'
-
   '@tanstack/db@0.5.18':
     resolution: {integrity: sha512-lEXMfuKBMsCcN63Rmm/nJdk583uQcZ4rkDwzVz3Xe6yI/+MjnwRonlM9e236IPVf2iADxpGwUulEXOMJ8bpnPA==}
     peerDependencies:
@@ -1466,8 +1461,8 @@ packages:
     resolution: {integrity: sha512-3PouiFjR4B6x1c969/Pl4ZIJleof1M0n6fNX8NRiC9Sqv1g06CVDlEaXUR4212ycGFyfq4q+t8Gi37Xy+z34iQ==}
     engines: {node: '>=18'}
 
-  '@tanstack/react-db@0.1.61':
-    resolution: {integrity: sha512-WY76mGQmiTbAPM4qdsk+AvlQKdK0uC/lTpceCkZiozgpW4M7RrYYFYy92YBvi+PunauNazyUxfhUWlh53SvsAg==}
+  '@tanstack/react-db@0.1.62':
+    resolution: {integrity: sha512-9fCEIIum3glKoRRdClMXsLoc5JDzMQaRL9HwHod1k9dWD6NbhSjshNX0oT1cQ9hsJtDtbDPmWSF+/pteyNMLyA==}
     peerDependencies:
       react: '>=16.8.0'
 
@@ -4223,13 +4218,6 @@ snapshots:
       sorted-btree: 1.8.1
       typescript: 5.9.3
 
-  '@tanstack/db@0.5.17(typescript@5.9.3)':
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      '@tanstack/db-ivm': 0.1.14(typescript@5.9.3)
-      '@tanstack/pacer-lite': 0.2.1
-      typescript: 5.9.3
-
   '@tanstack/db@0.5.18(typescript@5.9.3)':
     dependencies:
       '@standard-schema/spec': 1.1.0
@@ -4241,9 +4229,9 @@ snapshots:
 
   '@tanstack/pacer-lite@0.2.1': {}
 
-  '@tanstack/react-db@0.1.61(react@19.2.3)(typescript@5.9.3)':
+  '@tanstack/react-db@0.1.62(react@19.2.3)(typescript@5.9.3)':
     dependencies:
-      '@tanstack/db': 0.5.17(typescript@5.9.3)
+      '@tanstack/db': 0.5.18(typescript@5.9.3)
       react: 19.2.3
       use-sync-external-store: 1.6.0(react@19.2.3)
     transitivePeerDependencies:

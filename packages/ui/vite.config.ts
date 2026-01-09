@@ -1,4 +1,4 @@
-import { defineConfig } from "vite"
+import { defineConfig, type PluginOption } from "vite"
 import react from "@vitejs/plugin-react"
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite"
 import { capsizeRadixPlugin } from "vite-plugin-capsize-radix"
@@ -16,6 +16,7 @@ export default defineConfig({
       generatedRouteTree: "./src/routeTree.gen.ts",
     }),
     react(),
+    // Cast needed due to @types/node version mismatch between packages
     capsizeRadixPlugin({
       outputPath: `./public/fonts.css`,
       // Space Grotesk - bold geometric sans for headings
@@ -24,6 +25,6 @@ export default defineConfig({
       defaultFontStack: [inter, arial],
       // JetBrains Mono - excellent for code/session IDs
       codingFontStack: [jetBrainsMono, arial],
-    }),
+    }) as unknown as PluginOption,
   ],
 })

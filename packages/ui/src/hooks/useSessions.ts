@@ -12,23 +12,18 @@ import type { Session } from "../data/schema";
 export function useSessions() {
   const db = getSessionsDbSync();
 
-  // Cast needed: @durable-streams/state Collection is runtime-compatible with
-  // @tanstack/react-db but TypeScript sees them as incompatible due to private fields
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sessionsCollection = db.collections.sessions as any;
-
   const query = useLiveQuery(
     (q) =>
       q
-        .from({ sessions: sessionsCollection })
-        .orderBy(({ sessions }) => (sessions as Session).lastActivityAt, "desc"),
+        .from({ sessions: db.collections.sessions })
+        .orderBy(({ sessions }) => sessions.lastActivityAt, "desc"),
     [db]
   );
 
   // Transform to array of sessions
   // The query.data is a Map where values are the session objects directly
   const sessions: Session[] = query?.data
-    ? (Array.from(query.data.values()) as Session[])
+    ? Array.from(query.data.values())
     : [];
 
   return {
