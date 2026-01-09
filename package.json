@@ -9,7 +9,8 @@
     "serve": "pnpm --filter @claude-code-ui/daemon serve",
     "watch": "pnpm --filter @claude-code-ui/daemon watch",
     "watch:recent": "pnpm --filter @claude-code-ui/daemon watch:recent",
-    "watch:active": "pnpm --filter @claude-code-ui/daemon watch:active"
+    "watch:active": "pnpm --filter @claude-code-ui/daemon watch:active",
+    "setup": "pnpm --filter @claude-code-ui/daemon setup"
   },
   "engines": {
     "node": ">=20.19.0"

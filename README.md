@@ -105,7 +105,6 @@ pnpm install
 For accurate "Needs Approval" detection, install the PermissionRequest hook:
 
 ```bash
-cd packages/daemon
 pnpm run setup
 ```
 
