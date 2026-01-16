@@ -39,10 +39,8 @@ export function RepoSection({ repoId, repoUrl, sessions, activityScore }: RepoSe
     return null;
   }
 
-  const isHot = activityScore > 50;
-
   return (
-    <Box mb="7">
+    <Box mb="12">
       <Flex align="center" gap="3" mb="4">
         <Heading size="6" weight="bold">
           {repoId === "Other" ? (
@@ -55,14 +53,6 @@ export function RepoSection({ repoId, repoUrl, sessions, activityScore }: RepoSe
             repoId
           )}
         </Heading>
-        {isHot && (
-          <Text size="2" color="orange">
-            🔥
-          </Text>
-        )}
-        <Text size="2" color="gray">
-          {sessions.length} session{sessions.length !== 1 ? "s" : ""}
-        </Text>
       </Flex>
 
       <Flex gap="3" style={{ minHeight: 240 }}>
