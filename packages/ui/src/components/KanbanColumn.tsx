@@ -7,14 +7,13 @@ interface KanbanColumnProps {
   title: string;
   status: SessionStatus | "needs-approval";
   sessions: Session[];
-  color: "green" | "orange" | "yellow" | "gray";
+  color: "green" | "orange" | "yellow";
 }
 
 const headerClassMap = {
   green: "column-header-working",
   orange: "column-header-approval",
   yellow: "column-header-waiting",
-  gray: "column-header-idle",
 };
 
 export function KanbanColumn({ title, sessions, color }: KanbanColumnProps) {
@@ -53,14 +52,12 @@ export function KanbanColumn({ title, sessions, color }: KanbanColumnProps) {
     green: "var(--grass-3)",
     orange: "var(--orange-3)",
     yellow: "var(--amber-3)",
-    gray: "var(--slate-3)",
   };
 
   const countColorMap = {
     green: "grass" as const,
     orange: "orange" as const,
     yellow: "amber" as const,
-    gray: "gray" as const,
   };
 
   return (
@@ -71,7 +68,7 @@ export function KanbanColumn({ title, sessions, color }: KanbanColumnProps) {
         maxWidth: 500,
         backgroundColor: colorMap[color],
         borderRadius: "var(--radius-4)",
-        border: `1px solid var(--${color === "gray" ? "slate" : color === "green" ? "grass" : color === "yellow" ? "amber" : "orange"}-6)`,
+        border: `1px solid var(--${color === "green" ? "grass" : color === "yellow" ? "amber" : "orange"}-6)`,
       }}
       p="3"
     >

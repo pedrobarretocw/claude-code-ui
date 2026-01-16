@@ -1,4 +1,4 @@
-import { useLiveQuery } from "@tanstack/react-db";
+import { useState, useEffect } from "react";
 import { getSessionsDbSync } from "../data/sessionsDb";
 import type { Session } from "../data/schema";
 
@@ -11,25 +11,39 @@ import type { Session } from "../data/schema";
  */
 export function useSessions() {
   const db = getSessionsDbSync();
+  const [sessions, setSessions] = useState<Session[]>([]);
 
-  const query = useLiveQuery(
-    (q) =>
-      q
-        .from({ sessions: db.collections.sessions })
-        .orderBy(({ sessions }) => sessions.lastActivityAt, "desc"),
-    [db]
-  );
+  useEffect(() => {
+    const collection = db.collections.sessions;
 
-  // Transform to array of sessions
-  // The query.data is a Map where values are the session objects directly
-  const sessions: Session[] = query?.data
-    ? Array.from(query.data.values())
-    : [];
+    // Get initial data
+    const updateSessions = () => {
+      let sessionsArray = Array.from(collection.values()) as Session[];
+      
+      // Sort by lastActivityAt descending
+      sessionsArray.sort((a, b) => 
+        new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime()
+      );
+      
+      setSessions(sessionsArray);
+    };
 
-  return {
-    sessions,
-    isLoading: query?.isLoading ?? false,
-  };
+    updateSessions();
+
+    // Subscribe to changes
+    const subscription = collection.subscribeChanges(updateSessions);
+
+    return () => {
+      // Cleanup subscription
+      if (subscription && typeof subscription.unsubscribe === 'function') {
+        subscription.unsubscribe();
+      } else if (typeof subscription === 'function') {
+        subscription();
+      }
+    };
+  }, [db]);
+
+  return { sessions };
 }
 
 // Activity score weights

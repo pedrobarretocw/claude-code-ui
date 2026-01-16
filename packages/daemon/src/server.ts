@@ -8,7 +8,6 @@ import { DurableStream } from "@durable-streams/client";
 import { sessionsStateSchema, type Session, type RecentOutput, type PRInfo } from "./schema.js";
 import type { SessionState } from "./watcher.js";
 import type { LogEntry } from "./types.js";
-import { generateAISummary, generateGoal } from "./summarizer.js";
 import { queuePRCheck, getCachedPR, setOnPRUpdate, stopAllPolling, clearPRForSession } from "./github.js";
 import { log } from "./log.js";
 
@@ -101,11 +100,9 @@ export class StreamServer {
     // Cache session state for PR update callbacks
     this.sessionCache.set(sessionState.sessionId, sessionState);
 
-    // Generate AI goal and summary (goals are cached, summaries update more frequently)
-    const [goal, summary] = await Promise.all([
-      generateGoal(sessionState),
-      generateAISummary(sessionState),
-    ]);
+    // Use simple fallback values for goal and summary (no AI)
+    const goal = getSimpleGoal(sessionState);
+    const summary = getSimpleSummary(sessionState);
 
     // Get cached PR info if available (will be null if branch just changed)
     const pr = sessionState.gitBranch
@@ -155,6 +152,48 @@ export class StreamServer {
   }
 
   /**
+   * Clear all sessions from the stream (emits delete events)
+   */
+  async clearAllSessions(): Promise<void> {
+    if (!this.stream) {
+      throw new Error("Server not started");
+    }
+
+    log("Server", `Clearing ${this.sessionCache.size} sessions`);
+
+    // Emit delete events for all cached sessions
+    for (const sessionState of this.sessionCache.values()) {
+      const session: Session = {
+        sessionId: sessionState.sessionId,
+        cwd: sessionState.cwd,
+        gitBranch: sessionState.gitBranch,
+        gitRepoUrl: sessionState.gitRepoUrl,
+        gitRepoId: sessionState.gitRepoId,
+        originalPrompt: sessionState.originalPrompt,
+        status: sessionState.status.status,
+        lastActivityAt: sessionState.status.lastActivityAt,
+        messageCount: sessionState.status.messageCount,
+        hasPendingToolUse: sessionState.status.hasPendingToolUse,
+        pendingTool: null,
+        goal: "",
+        summary: "",
+        recentOutput: [],
+        pr: null,
+      };
+
+      const event = sessionsStateSchema.sessions.delete({
+        key: session.sessionId,
+        oldValue: session,
+      });
+      await this.stream.append(event);
+    }
+
+    // Clear the cache
+    this.sessionCache.clear();
+    log("Server", "All sessions cleared");
+  }
+
+  /**
    * Publish session with updated PR info (called from PR update callback)
    */
   async publishSessionWithPR(sessionState: SessionState, pr: PRInfo | null): Promise<void> {
@@ -162,11 +201,9 @@ export class StreamServer {
       throw new Error("Server not started");
     }
 
-    // Generate AI goal and summary
-    const [goal, summary] = await Promise.all([
-      generateGoal(sessionState),
-      generateAISummary(sessionState),
-    ]);
+    // Use simple fallback values for goal and summary (no AI)
+    const goal = getSimpleGoal(sessionState);
+    const summary = getSimpleSummary(sessionState);
 
     const session: Session = {
       sessionId: sessionState.sessionId,
@@ -189,6 +226,89 @@ export class StreamServer {
     const event = sessionsStateSchema.sessions.update({ value: session });
     await this.stream.append(event);
   }
+}
+
+/**
+ * Get a simple goal from the original prompt (no AI)
+ */
+function getSimpleGoal(session: SessionState): string {
+  const { originalPrompt } = session;
+  // Clean and truncate
+  let goal = originalPrompt
+    .replace(/^["']|["']$/g, "")
+    .replace(/\*\*/g, "")
+    .replace(/#{1,6}\s*/g, "")
+    .replace(/\n.*/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (goal.length > 50) {
+    goal = goal.slice(0, 47) + "...";
+  }
+  return goal;
+}
+
+/**
+ * Get a simple summary based on session status (no AI)
+ */
+function getSimpleSummary(session: SessionState): string {
+  const { status, entries, originalPrompt } = session;
+
+  if (entries.length < 3) {
+    return "Just started";
+  }
+
+  if (status.hasPendingToolUse) {
+    return "Waiting for approval";
+  }
+
+  if (status.status === "waiting") {
+    return "Waiting for input";
+  }
+
+  if (status.status === "working") {
+    // Check last tool used
+    const lastAssistant = [...entries].reverse().find((e) => e.type === "assistant");
+    if (lastAssistant && lastAssistant.type === "assistant") {
+      const tools = lastAssistant.message.content
+        .filter((b) => b.type === "tool_use")
+        .map((b) => (b.type === "tool_use" ? b.name : ""));
+
+      if (tools.length > 0) {
+        const tool = tools[0];
+        const input = (
+          lastAssistant.message.content.find((b) => b.type === "tool_use") as {
+            input: Record<string, unknown>;
+          }
+        )?.input;
+
+        if (tool === "Edit" || tool === "Write") {
+          const file = (input?.file_path as string)?.split("/").pop() || "file";
+          return `Editing ${file}`;
+        }
+        if (tool === "Read") {
+          const file = (input?.file_path as string)?.split("/").pop() || "file";
+          return `Reading ${file}`;
+        }
+        if (tool === "Bash") {
+          const cmd = ((input?.command as string) || "").split(" ")[0];
+          return `Running ${cmd}`;
+        }
+        if (tool === "Grep" || tool === "Glob") {
+          return "Searching codebase";
+        }
+        if (tool === "Task") {
+          return "Running agent task";
+        }
+        return `Using ${tool}`;
+      }
+    }
+    return "Processing...";
+  }
+
+  // For idle, show first few words of prompt
+  const words = originalPrompt.split(" ").slice(0, 4).join(" ");
+  return words.length < originalPrompt.length ? `${words}...` : words;
 }
 
 /**

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Flex, Text } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
-import { RepoSection } from "../components/RepoSection";
+import { RepoSection, getEffectiveStatus } from "../components/RepoSection";
 import { useSessions, groupSessionsByRepo } from "../hooks/useSessions";
 
 export const Route = createFileRoute("/")({
@@ -18,14 +18,22 @@ function IndexPage() {
     return () => clearInterval(interval);
   }, []);
 
-  if (sessions.length === 0) {
+  // Check if there are any active (non-idle) sessions
+  const hasActiveSessions = sessions.some((s) => {
+    const status = getEffectiveStatus(s);
+    return status === "working" || status === "waiting";
+  });
+
+  if (sessions.length === 0 || !hasActiveSessions) {
     return (
       <Flex direction="column" align="center" gap="3" py="9">
         <Text color="gray" size="3">
-          No sessions found
+          No active sessions
         </Text>
         <Text color="gray" size="2">
-          Start a Claude Code session to see it here
+          {sessions.length === 0
+            ? "Start a Claude Code session to see it here"
+            : "All sessions are currently idle"}
         </Text>
       </Flex>
     );

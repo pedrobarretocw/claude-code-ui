@@ -1,5 +1,5 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Theme, Box, Heading, Flex, Text } from "@radix-ui/themes";
 import { getSessionsDb } from "../data/sessionsDb";
 
@@ -34,6 +34,7 @@ function RootLayout() {
           <Outlet />
         </Flex>
       </Box>
+
       <TanStackRouterDevtools />
     </Theme>
   );

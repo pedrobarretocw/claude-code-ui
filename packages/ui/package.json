@@ -29,7 +29,7 @@
   "devDependencies": {
     "@capsizecss/metrics": "^3.4.0",
     "@eslint/js": "^9.39.1",
-    "@tanstack/router-devtools": "^1.146.2",
+    "@tanstack/react-router-devtools": "^1.146.2",
     "@tanstack/router-plugin": "^1.146.2",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",

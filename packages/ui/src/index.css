@@ -67,10 +67,6 @@ body {
   border-color: #eab308;
 }
 
-.column-header-idle {
-  border-color: #64748b;
-}
-
 /* Stagger animation for cards entering */
 @keyframes slide-up {
   from {

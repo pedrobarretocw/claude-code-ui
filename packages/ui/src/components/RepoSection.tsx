@@ -8,7 +8,7 @@ const IDLE_TIMEOUT_MS = 60 * 60 * 1000; // 1 hour - match daemon setting
  * Get effective status based on elapsed time since last activity.
  * Sessions inactive for 1 hour are considered idle regardless of stored status.
  */
-function getEffectiveStatus(session: Session): SessionStatus {
+export function getEffectiveStatus(session: Session): SessionStatus {
   const elapsed = Date.now() - new Date(session.lastActivityAt).getTime();
   if (elapsed > IDLE_TIMEOUT_MS) {
     return "idle";
@@ -32,7 +32,12 @@ export function RepoSection({ repoId, repoUrl, sessions, activityScore }: RepoSe
   const waiting = sessions.filter(
     (s) => getEffectiveStatus(s) === "waiting" && !s.hasPendingToolUse
   );
-  const idle = sessions.filter((s) => getEffectiveStatus(s) === "idle");
+
+  // Don't render if only idle sessions exist
+  const hasActiveSessions = working.length > 0 || needsApproval.length > 0 || waiting.length > 0;
+  if (!hasActiveSessions) {
+    return null;
+  }
 
   const isHot = activityScore > 50;
 
@@ -78,12 +83,6 @@ export function RepoSection({ repoId, repoUrl, sessions, activityScore }: RepoSe
           status="waiting"
           sessions={waiting}
           color="yellow"
-        />
-        <KanbanColumn
-          title="Idle"
-          status="idle"
-          sessions={idle}
-          color="gray"
         />
       </Flex>
 

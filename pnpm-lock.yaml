@@ -110,7 +110,7 @@ importers:
       '@eslint/js':
         specifier: ^9.39.1
         version: 9.39.2
-      '@tanstack/router-devtools':
+      '@tanstack/react-router-devtools':
         specifier: ^1.146.2
         version: 1.146.2(@tanstack/react-router@1.146.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@tanstack/router-core@1.146.2)(csstype@3.2.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.10)
       '@tanstack/router-plugin':
@@ -1448,8 +1448,18 @@ packages:
     peerDependencies:
       typescript: '>=4.7'
 
+  '@tanstack/db-ivm@0.1.16':
+    resolution: {integrity: sha512-DIMfUoHtAcQ1IYghU+XqprDdzToy2d6qg3R5h0DJH60XPsmRTt0qOnlu/HVZqwCP7XL/b2UhRvyR5utz/N4KGg==}
+    peerDependencies:
+      typescript: '>=4.7'
+
   '@tanstack/db@0.5.18':
     resolution: {integrity: sha512-lEXMfuKBMsCcN63Rmm/nJdk583uQcZ4rkDwzVz3Xe6yI/+MjnwRonlM9e236IPVf2iADxpGwUulEXOMJ8bpnPA==}
+    peerDependencies:
+      typescript: '>=4.7'
+
+  '@tanstack/db@0.5.20':
+    resolution: {integrity: sha512-vpN2JlqxdkvLQq2Uc5H0+JXfVTKaAxArOZATCbiDt+NaTw1kriA20rgJRJTPBA8RxQwNmZEUWKEYfjAn7+YI+g==}
     peerDependencies:
       typescript: '>=4.7'
 
@@ -1502,18 +1512,6 @@ packages:
       '@tanstack/router-core': ^1.146.2
       csstype: ^3.0.10
       solid-js: '>=1.9.5'
-    peerDependenciesMeta:
-      csstype:
-        optional: true
-
-  '@tanstack/router-devtools@1.146.2':
-    resolution: {integrity: sha512-bK9r2kmr4FUvv6g4CQbWVG1Y3QD4j4cmQZdBYHyRiSTLqYgPO4WW1zkB+w4OfzjD3YEorZRKzzkqWLJsJHKf4Q==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      '@tanstack/react-router': ^1.146.2
-      csstype: ^3.0.10
-      react: '>=18.0.0 || >=19.0.0'
-      react-dom: '>=18.0.0 || >=19.0.0'
     peerDependenciesMeta:
       csstype:
         optional: true
@@ -3148,7 +3146,7 @@ snapshots:
     dependencies:
       '@durable-streams/client': 0.1.5
       '@standard-schema/spec': 1.1.0
-      '@tanstack/db': 0.5.18(typescript@5.9.3)
+      '@tanstack/db': 0.5.20(typescript@5.9.3)
     transitivePeerDependencies:
       - typescript
 
@@ -4218,10 +4216,23 @@ snapshots:
       sorted-btree: 1.8.1
       typescript: 5.9.3
 
+  '@tanstack/db-ivm@0.1.16(typescript@5.9.3)':
+    dependencies:
+      fractional-indexing: 3.2.0
+      sorted-btree: 1.8.1
+      typescript: 5.9.3
+
   '@tanstack/db@0.5.18(typescript@5.9.3)':
     dependencies:
       '@standard-schema/spec': 1.1.0
       '@tanstack/db-ivm': 0.1.14(typescript@5.9.3)
+      '@tanstack/pacer-lite': 0.2.1
+      typescript: 5.9.3
+
+  '@tanstack/db@0.5.20(typescript@5.9.3)':
+    dependencies:
+      '@standard-schema/spec': 1.1.0
+      '@tanstack/db-ivm': 0.1.16(typescript@5.9.3)
       '@tanstack/pacer-lite': 0.2.1
       typescript: 5.9.3
 
@@ -4286,20 +4297,6 @@ snapshots:
       tiny-invariant: 1.3.3
     optionalDependencies:
       csstype: 3.2.3
-
-  '@tanstack/router-devtools@1.146.2(@tanstack/react-router@1.146.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@tanstack/router-core@1.146.2)(csstype@3.2.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.10)':
-    dependencies:
-      '@tanstack/react-router': 1.146.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@tanstack/react-router-devtools': 1.146.2(@tanstack/react-router@1.146.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@tanstack/router-core@1.146.2)(csstype@3.2.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.10)
-      clsx: 2.1.1
-      goober: 2.1.18(csstype@3.2.3)
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
-    optionalDependencies:
-      csstype: 3.2.3
-    transitivePeerDependencies:
-      - '@tanstack/router-core'
-      - solid-js
 
   '@tanstack/router-generator@1.146.2':
     dependencies:

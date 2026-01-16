@@ -49,14 +49,3 @@ export function getSessionsDbSync(): SessionsDB {
   }
   return dbInstance;
 }
-
-/**
- * Close the sessions DB connection.
- */
-export async function closeSessionsDb(): Promise<void> {
-  if (dbInstance) {
-    await dbInstance.close();
-    dbInstance = null;
-    dbPromise = null;
-  }
-}

@@ -24,9 +24,11 @@ for (const envPath of envPaths) {
 }
 import { SessionWatcher, type SessionEvent, type SessionState } from "./watcher.js";
 import { StreamServer } from "./server.js";
+import { ApiServer } from "./api.js";
 import { formatStatus } from "./status.js";
 
 const PORT = parseInt(process.env.PORT ?? "4450", 10);
+const API_PORT = parseInt(process.env.API_PORT ?? "4451", 10);
 const MAX_AGE_HOURS = parseInt(process.env.MAX_AGE_HOURS ?? "24", 10);
 const MAX_AGE_MS = MAX_AGE_HOURS * 60 * 60 * 1000;
 
@@ -59,7 +61,17 @@ async function main(): Promise<void> {
   const streamServer = new StreamServer({ port: PORT });
   await streamServer.start();
 
+  // Start the API server for loop commands
+  const apiServer = new ApiServer({
+    port: API_PORT,
+    onClearSessions: async () => {
+      await streamServer.clearAllSessions();
+    },
+  });
+  await apiServer.start();
+
   console.log(`Stream URL: ${colors.cyan}${streamServer.getStreamUrl()}${colors.reset}`);
+  console.log(`API URL: ${colors.cyan}http://127.0.0.1:${API_PORT}${colors.reset}`);
   console.log();
 
   // Start the session watcher
@@ -104,6 +116,7 @@ async function main(): Promise<void> {
     console.log();
     console.log(`${colors.dim}Shutting down...${colors.reset}`);
     watcher.stop();
+    await apiServer.stop();
     await streamServer.stop();
     process.exit(0);
   });
